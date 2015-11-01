@@ -1,15 +1,3 @@
-
-
-# MAXIMILIANO GRECO
-
-## CASO 1.1
-
-## CASO 1.2
-
-### GRUPO 5A
-
----
-
 # Caso 1.1.
 ## Estimación de una función de demanda de dinero con datos de la economía española.
 
@@ -49,7 +37,7 @@ En el modelo se intenta explicar la demanda de dinero en función de la renta re
 
 - c)  Estimar el modelo asumiendo que la restricción es cierta.
 
-- d)  Suponer que queremos estimar el modelo usando la variable M1 en términos reales, imponiendo para ello la restricción del apartado b), y a la vez seguir manteniendo el ipc como variable explicativa. Pensar cómo transformar el modelo para conseguir el doble objetivo anterior y calcular de forma razonada (con la ayuda de la estimación del apartado a) el valor del coeficiente que acompaña a la variable ipc.
+- d)  Suponer que queremos estimar el modelo usando la variable M1 en términos reales, imponiendo para ello la restricción del apartado b), y a la vez seguir manteniendo el IPC como variable explicativa. Pensar cómo transformar el modelo para conseguir el doble objetivo anterior y calcular de forma razonada (con la ayuda de la estimación del apartado a) el valor del coeficiente que acompaña a la variable IPC.
 
 - e)  Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico.
 
@@ -59,9 +47,10 @@ Interpretar económicamente todos los modelos estimados y calcular en cada model
 
 $$log (M) = β_0 + β_1 log (y) + β_2 log (r) + β_3 log (ipc) + u$$
 
-## MODELO ORIGINAL (Cobb-Douglas):
+## QUE ES UNA TRANSFORMACIÓN DEL MODELO ORIGINAL (Cobb-Douglas):
 
 $$M= e^{\beta_0}·y^{\beta_1}·r^{\beta_2}·ipc^{\beta_3}$$
+
 $$\frac{M}{ipc^{\beta_3}}= e^{\beta_0}·y^{\beta_1}·r^{\beta_2}$$
 
 # DATOS:
@@ -77,11 +66,47 @@ Dado que cada serie presenta datos para un rango distinto, he fitrado el rango c
 - __rc:__ Tipo de interés de los depósitos a la vista (%) [enlace](http://data.imf.org/?sk=8bb6d92d-843b-4a2c-a147-4e009850014c&dsId=DS_1438873160033)
 - __y:__ PIB real, ajustado de efecto estacional, indice (2010 = 100%) [enlace](http://data.imf.org/?sk=c7fe04cd-fbbf-4f6b-b7d2-cd13a9fa5122&dsId=DS_1438873160033)
 
-![](output_9_0.png)
+![](file:///Users/mmngreco/Documents/repos/unizar/AE/caso1.1/caso_1.1/caso_1.1%20(2\)/output_10_0.png)
 
 Los gráficos nos indican que las variables presentan tendencia determinista, excepto el caso del tipo de interés que no está muy claro. Para identificar mejor los componentes deberíamos hacer un contraste de dickey-fuller para todas y decidir a partir de la información recogida. A priori podemos decir que el tipo de interés tiene una tendencia mas volátil y decreciente, mientras que el resto son más estables y con tendencia creciente respecto del tiempo.
 
-![](output_11_2.png)
+![](output_12_2.png)
+
+
+    <matplotlib.text.Text at 0x1172b5978>
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_13_2.png)
+
+
+
+
+
+
+
+
+    <matplotlib.text.Text at 0x11bb59048>
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_14_2.png)
+
+
+Este gráfico nos muestra las relaciones entre todas las variables y los histogramas de frecuencia en la diagonal. Resalta sobre todo, el comportamiento de la variable tipo de interés con el resto, vemos que se comporta de la misma forma sea cual sea la variable, esto sugiere que el tipo de interés tiene la misma correlación con el resto de variables. Por lo tanto seguramente tendremos problemas de multicolinealidad, esto ocurre cuando dos variables explicativas tienen una fuerte correlación.
+
+
+
 
                         m1          y         r          p
     Q1 1982  4363000000000  44.744559  0.119700  26.637351
@@ -90,6 +115,10 @@ Los gráficos nos indican que las variables presentan tendencia determinista, ex
     Q4 1982  5003400000000  45.375656  0.126733  29.040898
     Q1 1983  4821800000000  45.541487  0.122100  30.160465
 
+
+
+
+
                          m1          y         r          p
     Q4 1997  21834900000000  71.054916  0.036000  71.072951
     Q1 1998  21705700000000  69.937077  0.032467  71.310435
@@ -97,18 +126,22 @@ Los gráficos nos indican que las variables presentan tendencia determinista, ex
     Q3 1998  22653200000000  71.158433  0.029167  72.004619
     Q4 1998  25270600000000  71.763124  0.024633  72.135105
 
+
 ## MODELO A
 
+
+
+
     $np.log(m1) ~ np.log(y) + np.log(r) + np.log(p)$
-    
-    
+
+
                                 OLS Regression Results                            
     ==============================================================================
     Dep. Variable:             np.log(m1)   R-squared:                       0.991
     Model:                            OLS   Adj. R-squared:                  0.990
     Method:                 Least Squares   F-statistic:                     2296.
-    Date:                Sat, 31 Oct 2015   Prob (F-statistic):           4.57e-65
-    Time:                        20:35:48   Log-Likelihood:                 107.11
+    Date:                Sun, 01 Nov 2015   Prob (F-statistic):           4.57e-65
+    Time:                        12:10:04   Log-Likelihood:                 107.11
     No. Observations:                  68   AIC:                            -206.2
     Df Residuals:                      64   BIC:                            -197.3
     Df Model:                           3                                         
@@ -126,18 +159,18 @@ Los gráficos nos indican que las variables presentan tendencia determinista, ex
     Skew:                           0.021   Prob(JB):                        0.410
     Kurtosis:                       2.207   Cond. No.                         536.
     ==============================================================================
-    
+
     Warnings:
     [1] Standard Errors are heteroscedasticity robust (HC1)
 
 
 Estimando el mismo modelo pero con estimaciones robustas, no sulucionamos los problemas de heterocedasticidad pero al menos nos aseguramos que los t-ratios y el estadístico F siguen sus correspondientes distribuciones. Por tanto, usaremos estos errores estandar para hacer los contrastes.
 
-A partir de la información obtenida del modelo, analizamos el **Durbin-Watson** que contrasta la no autocorrelación, está entre 0 y 4, con un DW cerca de 0 correlación positiva y cerca de 4 correlación negativa. 
+A partir de la información obtenida del modelo, analizamos el **Durbin-Watson** que contrasta la no autocorrelación, está entre 0 y 4, con un DW cerca de 0 correlación positiva y cerca de 4 correlación negativa.
 
 $H_0 = \rho = 0$
 
-A priori, parece haber autorcorrelación, pero **no está claro** con un DW de 1.128 > 1, $\hat{\rho} = 1 - \frac{1.128}{2} = 0.436$ con $-1< \rho < 1$ estaríamos indecisos solo con este contraste, por lo que necesitamos __más información__ al respecto. 
+A priori, parece haber autorcorrelación, pero **no está claro** con un DW de 1.128 > 1, $\hat{\rho} = 1 - \frac{1.128}{2} = 0.436$ con $-1< \rho < 1$ estaríamos indecisos solo con este contraste, por lo que necesitamos __más información__ al respecto.
 
 La prueba de **Jarque-Bera** nos da información sobre la normalidad de las perturbaciones, con un JB = 1.785 y p-value = 0.410, **no hay evidencia que sugiera rechazar** la hipótesis de normalidad de las perturbaciones. El contraste **Omnibus** también da evidencia a **favor de la normalidad.**
 
@@ -145,7 +178,13 @@ Nos faltaría información acerca de la correcta **especificación** y sobre la 
 
 Tras este breve análisis, se puede concluir que el modelo es significativo conjuntamente, los parámetros lo son individualmente y además con un $R^2 = 0.991$ por lo que el modelo explica practicamente la totalidad del comportamiento de la variable endógena.
 
-![](output_18_0.png)
+El estadístico Cond. No. es medida de multicolinealidad mayor que 60 indica problemas, como ya se vió anteriormente, cuando se analiza las relaciones entre las variables.
+
+
+
+
+
+![](output_22_0.png)
 
 
 En el primero de los gráficos está representado la endógena real y la estimada, se ve como la estimación se ajusta muy bien a la realidad (endógena), aunque sabemos que presenta problemas.
@@ -154,15 +193,64 @@ El segundo es el gráfico de los residuos, a partir de 1989 parece presentar un 
 
 ## AUTOCORRELACIÓN
 
-![](output_21_1.png)
 
-![](output_22_1.png)
 
-![](output_23_1.png)
 
-![](output_24_1.png)
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
 
 ![](output_25_1.png)
+
+
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_26_1.png)
+
+
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_27_1.png)
+
+
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_28_1.png)
+
+
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_29_1.png)
+
+
+Los gráficos muestran para cada variable la función de autocorrelación y la función de autocorrelación parcial, puede verse como todas las variables siguen una estructura autorregresiva de orden 2, AR(2). Par el caso de los residuos la función de autocorrelación no nos dice nada casi nada. Habría que diferenciar y ver el posible orden de integración y aplicar constraste de Dickey-Fuller.
+
+
 
 
     ## Contraste de Aucorrelación de Breusch-Godfrey:
@@ -171,7 +259,11 @@ El segundo es el gráfico de los residuos, a partir de 1989 parece presentar un 
     BG(3): 24.313	 p-value: 0.0
     BG(4): 28.2185	 p-value: 0.0
 
+
 Contraste LM de Breusch-Godfrey, para LM(i) con i = 1,...,4, nos dice que hay evidencia a favor de la autocorrelación de los residuos para cada orden i.
+
+
+
 
     ## Contrsaste de Aucorrelación de LJung-Box
         lbvalue  pvalue
@@ -196,7 +288,10 @@ Por tanto el modelo presenta problemas de autocorrelación, este problema es tí
 
 ## HETEROCEDASTICIDAD
 
-### Breusch-Pagan
+
+
+
+    ## Contraste de Heterocedasticidad (Breusch-Pagan):
     BP: 8.049 	 p-value: 0.045
 
 
@@ -207,28 +302,34 @@ El contraste de breush-pagan plantea la siguiente regresión auxiliar:
 $\hat{u}^2 = \gamma_0 + \gamma_1 x + v$ y contrasta $\gamma_0 = \gamma_1 = 0$.
 
 
-### Goldfeld-Quandt
+
+
+    ## Contraste de Heterocedasticidad (Goldfeld-Quandt):
     GQ ~ F : 0.747	pvalue: 0.785
 
 
 Para buscar más información que nos permita arrojar luz sobre la homocedasticidad del modelo, nos fijamos en los resultados del contraste de Goldfeld-Quandt que nos dice que se acepta la hipótesis nula de homocedasticidad. Este test suele usarse cuando pensamos que la varianza de la perturbación tiene una relación proporcional al valor de una de la varianza de una de las variables explicativas.
 
-### ARCH
+
+
 
     Contraste LM ARCH: 22.7763	pvalue: 0.019
 
+
 Si la la varianza del error depende de la varianza del error en periodos anteriores, entonces este contraste lo recogería. La hipótesis nula es la ausencia de componentes ARCH frente a la alternativa de presencia.
 
-### White
+
+
+
     White: 14.7567	pvalue:0.0978
 
 
 El contraste de white, es muy sensible a la mala especificación del modelo y a la precencia de componentes ARCH. Por lo que no es fiable.
 
-$$y_t = a_0 + a_1 y_{t-1} + \cdots + a_q y_{t-q} + \epsilon_t = a_0 + \sum_{i=1}^q a_i y_{t-i} + \epsilon_t$$
+$$ y_t = a_0 + a_1 y_{t-1} + \cdots + a_q y_{t-q} + \epsilon_t = a_0 + \sum_{i=1}^q a_i y_{t-i} + \epsilon_t$$
 
 Se obtiene el cuadrado del error: $\hat \epsilon^2 $ y se hace la regresión:
-$$\hat \epsilon_t^2 = \hat \alpha_0 + \sum_{i=1}^{q} \hat \alpha_i \hat \epsilon_{t-i}^2$$
+$$ \hat \epsilon_t^2 = \hat \alpha_0 + \sum_{i=1}^{q} \hat \alpha_i \hat \epsilon_{t-i}^2$$
 donde q es la cantidad de retardos.
 
 La hipótesis nula es que $\alpha_i = 0$ $\forall i=1,..,q$
@@ -237,7 +338,10 @@ En una muestra de T residuos bajo la hipótesis nula de ausencia de componentes 
 
 ## ESPECIFICACIÓN
 
-### RESET
+
+
+
+    ## Contraste de RESET
 
     F-test: 15.1726	pvalue: 0.0
 
@@ -246,8 +350,10 @@ El test de RESET contrasta la correcta especificación o no del modelo, introduc
 
 ## SIGNIFICATIVIDAD Y CONTRASTES
 
-### Contraste de $\beta_3 = 1$
 
+
+
+    ## Contraste de $\beta_3 = 1$
                                  Test for Constraints                             
     ==============================================================================
                      coef    std err          t      P>|t|      [95.0% Conf. Int.]
@@ -258,7 +364,7 @@ El test de RESET contrasta la correcta especificación o no del modelo, introduc
 
 El contraste t-ratio para $\beta_3 = 1$ que se obtiene dividiendo el parámetro por su error estándar, sigue una t-student de N - k - 1 grado de libertad. Suponiendo que las muestras provienen de una población normal.
 
-## CONCLUSIONES
+## ¿SE CUMPLEN LOS SUPUESTO DEL MODELO LINEAL GENERAL?
 
 ### AUTOCORRELACIÓN
 
@@ -268,7 +374,7 @@ Por tanto el modelo evidencia __autocorrelación__.
 
 ### HOMOCEDASTICIDAD
 
-Aplicamos los contrastes de Breusch-Pagan (BP) y Goldfeld-Quandt (GQ) y encontramos cierta contradicción entre los contrastes, pues el contraste BP nos da una evidencia muy debil en contra de la hipótesis nula, para un nivel de significación del 5% se obtiene un p-value = 4,5% lo que estrictamente lleva a rechazar $H_0$. 
+Aplicamos los contrastes de Breusch-Pagan (BP) y Goldfeld-Quandt (GQ) y encontramos cierta contradicción entre los contrastes, pues el contraste BP nos da una evidencia muy debil en contra de la hipótesis nula, para un nivel de significación del 5% se obtiene un p-value = 4,5% lo que estrictamente lleva a rechazar $H_0$.
 
 Por otro lado el contraste Goldfeld-Quandt nos proporciona evidencia clara a favor la hipótesis nula.
 
@@ -306,6 +412,23 @@ $$ log(M1) = \beta_1 log(y) + \beta_2 log(r) + \beta_3 log(p) + u$$
 Planteamos un modelo MCO para la regresión anterior y obtenemos los siguientes resultados:
 
 ### PRINCIPALES RESULTADOS
+
+
+
+
+
+
+
+    <matplotlib.text.Text at 0x11ccdeb38>
+
+
+
+
+![](output_54_1.png)
+
+
+
+
 
     $\beta_0 = 16.7194 (0.4169)$
     $\beta_1 = 2.963 (0.191)$
@@ -368,8 +491,38 @@ $\frac{d(M)}{M} = \frac{d(P)}{P}$
 Por lo tanto aumentan en la misma dirección. Importante notar que en un esquema de modelo Keynesiano o Clásico, P es una variable endógena mientras que M es exógenas, para esta última, es importante notar que las autoridades monetarias deciden M y no r como es en la realidad.
 
 # APARTADO B
-Contrastar la restricción $β_3=1$, comentando sus implicaciones económicas. 
+Contrastar la restricción $β_3=1$, comentando sus implicaciones económicas.
 Hacer los cálculos paso a paso sin usar las opciones directas de Gretl.
+
+
+
+
+
+
+
+    0.097
+
+
+
+
+
+
+
+
+
+    0.398
+
+
+
+
+
+
+
+
+
+    -6.208
+
+
 
 Para contrastar $\beta_3 = 1$, tenemos dos opciones, plantear un contraste F o t, dado que es más sencillo un contraste t-ratio, el procedimiento a seguir es:
 
@@ -403,10 +556,54 @@ $t_{(63 , 0.025)} = -1.9983$
 
 $-6.208 < -1.9983 \rightarrow$ Nos indica que hay evidencia en contra de la hipótesis nula, por tanto rechazamos $H_0: \beta_3 = 1$
 
-![](output_61_1.png)
+
+
+
+     ## Contraste con los datos
+    Grados de Libertad = 63
+
+    $\hat{\beta}$ = 0.39817409979
+
+    $\beta_{H_0}$ = 1
+
+    Error Estandar = 0.0969435772227
+
+    t-ratio = -6.2080017826
+
+    $\alpha = 0.05$
+
+    punto crítico = -1.99834054177
+
+
+
+
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![](output_67_1.png)
 
 
 El gráfico muestra la representación gráfica de la prueba t-ratio para el caso de $\beta_3 = 1$
+
+### Contraste con los datos
+Grados de Libertad = 63
+
+$\hat{\beta}$ = 0.3982
+
+$\beta_{H_0}$ = 1
+
+Error Estandar = 0.0969435772227
+
+t-ratio = -6.20773461472
+
+$\alpha = 0.05$
+
+punto crítico = -1.99834054177
+Vamos a tener en cuenta que para una muestra grande la t-student converge en distribución a una Normal estandar.
+punto crítico = -1.96
 
 ### p-value
 
@@ -414,7 +611,10 @@ $P\{t < t_{contraste}\} < \alpha$
 
 Notar que dado que se trata de un contraste bilateral, basta compara el valor que queremos contrastar con el intervalo de confianza de $\hat{\beta}_3$, si el intervalo contiene a dicho valor entonces no se rechaza $H_0$, de lo contrario rechazaríamos la hipótesis nula.
 
-$P-value = P\{ t < |t-ratio|\} = 4.7e-08$
+
+
+
+    $P-value = P\{ t < |t-ratio|\} = 4.7e-08$
 
 
 Por tanto, los tres indicadores (P-Value, Punto Crítico, Intervalo de Confianza) nos dicen que hay evidencia suficiente para rechazar la hipótesis nula o equivalentemente existe evidencia para afirmar que $\beta_3 ≠ 1$.
@@ -425,7 +625,7 @@ Un $\beta_3 = 1$ implica que la oferta monetaria tiene una relación proporciona
 
 Estimar asumiendo que $\beta_3 = 1$, para ello tenemos que hacer unos cambios en el modelo inicial.
 
-Modelo Inicial: 
+Modelo Inicial:
 
 $$log (M1) = β_0 + β_1 log (y) + β_2 log (r) + β_3 log (ipc) + u$$
 
@@ -437,13 +637,16 @@ $$log (M1) - log (ipc) = β_0 + β_1 log (y) + β_2 log (r) + u$$
 
 Esta última es la ecuación que vamos a estimar.
 
+
+
+
                                 OLS Regression Results                            
     ==============================================================================
     Dep. Variable:             np.log(m1)   R-squared:                       0.989
     Model:                            OLS   Adj. R-squared:                  0.989
     Method:                 Least Squares   F-statistic:                     3242.
-    Date:                Sat, 31 Oct 2015   Prob (F-statistic):           7.86e-66
-    Time:                        20:45:43   Log-Likelihood:                 100.60
+    Date:                Sun, 01 Nov 2015   Prob (F-statistic):           7.86e-66
+    Time:                        11:47:04   Log-Likelihood:                 100.60
     No. Observations:                  68   AIC:                            -195.2
     Df Residuals:                      65   BIC:                            -188.6
     Df Model:                           2                                         
@@ -460,9 +663,23 @@ Esta última es la ecuación que vamos a estimar.
     Skew:                           0.407   Prob(JB):                        0.189
     Kurtosis:                       2.282   Cond. No.                         177.
     ==============================================================================
-    
+
     Warnings:
     [1] Standard Errors are heteroscedasticity robust (HC1)
+
+
+
+
+
+
+
+
+    <matplotlib.text.Text at 0x114024780>
+
+
+
+
+![](output_75_1.png)
 
 
 - Según el DW parece haber presencia de autocorrelacón.
@@ -474,7 +691,40 @@ Esta última es la ecuación que vamos a estimar.
 - $\beta_1 = 3.7423$ % que aumenta m/p por aumentos en un 1% de y.
 - $\beta_2 = 0.0983$ % que aumenta m/p por aumentos en un 1% de r(%).
 
-## Breusch-Godfrey
+
+
+
+
+
+
+    <class 'statsmodels.stats.contrast.ContrastResults'>
+                                 Test for Constraints                             
+    ==============================================================================
+                     coef    std err          t      P>|t|      [95.0% Conf. Int.]
+    ------------------------------------------------------------------------------
+    c0             3.7423      0.067     56.265      0.000         3.609     3.875
+    ==============================================================================
+
+
+
+
+
+
+    F: 1941.7861	pvalue: 0.0
+
+
+
+
+
+               df     sum_sq    mean_sq            F        PR(>F)
+    np.log(y)   1  18.379454  18.379454  5784.561958  3.050297e-65
+    np.log(r)   1   0.044524   0.044524    14.013098  3.869733e-04
+    Residual   65   0.206526   0.003177          NaN           NaN
+
+
+
+
+
     BG(1): 15.0057	pvalue: 0.0001
     BG(2): 24.6039	pvalue: 0.0
     BG(3): 25.0148	pvalue: 0.0
@@ -484,7 +734,10 @@ Esta última es la ecuación que vamos a estimar.
     BG(7): 32.2556	pvalue: 0.0
     BG(8): 32.4338	pvalue: 0.0001
 
-## Ljung-Box
+
+
+
+
     LJ(1): 14.895	pvalue: 0.0
     LJ(2): 35.63	pvalue: 0.0
     LJ(3): 40.933	pvalue: 0.0
@@ -496,6 +749,11 @@ Esta última es la ecuación que vamos a estimar.
     LJ(9): 63.051	pvalue: 0.0
     LJ(10): 66.265	pvalue: 0.0
     LJ(11): 81.978	pvalue: 0.0
+    LJ(12): 85.522	pvalue: 0.0
+
+
+
+
 
     ARCH: 17.7522	pvalue: 0.0875
     White: 8.6213	pvalue: 0.1252
@@ -506,7 +764,7 @@ Esta última es la ecuación que vamos a estimar.
 # APARTADO D
 Suponer que queremos estimar el modelo usando la variable M1 en términos reales, imponiendo para ello la restricción del apartado b ($\beta_3 = 1$), y a la vez seguir manteniendo el ipc como variable explicativa. Pensar cómo transformar el modelo para conseguir el doble objetivo anterior y calcular de forma razonada (con la ayuda de la estimación del apartado a) el valor del coeficiente que acompaña a la variable ipc.
 
-__RESTAR AL MODELO ORIGINAL $\log(ipc)$__
+## RESTAR AL MODELO ORIGINAL $\log(ipc)$
 
 Dado el modelo original:
 
@@ -530,13 +788,17 @@ __Obtenemos $\beta_3' = 0.398 - 1 = -0.602$__
 
 Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico.
 
+
+
+
+
                                 OLS Regression Results                            
     ==============================================================================
     Dep. Variable:         np.log(m1 / p)   R-squared:                       0.959
     Model:                            OLS   Adj. R-squared:                  0.957
     Method:                 Least Squares   F-statistic:                     506.5
-    Date:                Sat, 31 Oct 2015   Prob (F-statistic):           1.63e-44
-    Time:                        21:01:37   Log-Likelihood:                 107.11
+    Date:                Sun, 01 Nov 2015   Prob (F-statistic):           1.63e-44
+    Time:                        11:49:06   Log-Likelihood:                 107.11
     No. Observations:                  68   AIC:                            -206.2
     Df Residuals:                      64   BIC:                            -197.3
     Df Model:                           3                                         
@@ -554,18 +816,35 @@ Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico
     Skew:                           0.021   Prob(JB):                        0.410
     Kurtosis:                       2.207   Cond. No.                         536.
     ==============================================================================
-    
+
     Warnings:
     [1] Standard Errors are heteroscedasticity robust (HC1)
 
 
-## AUTOCORRELACIÓN 
+
+
+
+
+
+
+    <matplotlib.text.Text at 0x113e84390>
+
+
+
+
+![](output_86_1.png)
+
+
+## AUTOCORRELACIÓN
 
 ### Durbin-Watson
 
 No nos da información clara ya que esta cerca de 1, por tanto no podemos sacar conclusiones.
 
 ### Breusch-Godfrey
+
+
+
 
     LM(1): 11.9649139334	pvalue: 0.000542117130143
     LM(2): 23.8190547934	pvalue: 6.72601713742e-06
@@ -576,6 +855,9 @@ No nos da información clara ya que esta cerca de 1, por tanto no podemos sacar 
 Igual que antes, el contraste de BG nos aporta evidencia en contra de la hipótesis nula, por tanto parece que hay autocorrelación.
 
 ### Ljun-Box:
+
+
+
 
     LB(1): 11.2697	0.0008
     LB(2): 30.3604	0.0
@@ -588,6 +870,8 @@ Igual que antes, el contraste de BG nos aporta evidencia en contra de la hipóte
     LB(9): 55.9465	0.0
     LB(10): 56.8175	0.0
     LB(11): 67.5557	0.0
+    LB(12): 67.9257	0.0
+    LB(13): 76.6743	0.0
 
 
 El contraste LJB también coincide con el BG, es decir, hay evidencia de presencia de autocorrelación.
@@ -595,15 +879,24 @@ El contraste LJB también coincide con el BG, es decir, hay evidencia de presenc
 ## HETEROCEDASTICIDAD
 
 ### Breush-Pagan
+
+
+
+
     -----------------------------  ---------
     Lagrange multiplier statistic  8.04884
     p-value                        0.0450131
+    f-value                        2.86414
+    f p-value                      0.043508
     -----------------------------  ---------
 
 
 El contaste de BP no nos da una clara evidencia en contra de la hipótesis nula de heterocedasticidad, con un P-Value de 0.045 estamos muy próximos de aceptar la hipótesis nula con una confianza del 95%.
 
 ### Golfeld-Quandt
+
+
+
 
     -----------  --------
     F statistic  0.747412
@@ -614,6 +907,9 @@ El contaste de BP no nos da una clara evidencia en contra de la hipótesis nula 
 El contraste de GQ nos dice que no hay evidencia en contra de la hipótesis nula, por tanto parece que hay homocedasticidad.
 
 ### ARCH
+
+
+
 
     Contraste LM ARCH (22.776322189330134, 0.019003517556924414)
 
@@ -629,6 +925,9 @@ El contraste de JB nos da un P-Value de 0.410 por lo tanto no rechazamos la hip�
 ## ESPECIFICACIÓN
 
 ### RESET
+
+
+
 
     F 5.11121070558 pvalue: 0.00881675920409109
 
@@ -648,6 +947,15 @@ En el supuesto de que el modelo no tuviera problemas de autocorrealción, hetero
 Sin embargo para hacer el ejercicio de interpretación, si cumpliese las hipótesis nulas:
 Los coeficientes estimados son todos significativos individualmente, esto nos lo dice los t-ratios con p-value ≈ 0. Conjuntamente también son significativos si nos fijamos en la F, con un p-value ≈ 0.
 
+
+
+
+    $\beta_0 = 16.7194 (0.4169)$
+    $\beta_1 = 2.963 (0.191)$
+    $\beta_2 = 0.091 (0.0262)$
+    $\beta_3 = -0.6018 (0.0969)$
+
+
 ## INTERPRETACIÓN
 
 ### PRINCIPALES RESULTADOS
@@ -661,4 +969,3 @@ $\beta_2 = 0.091 (0.0262)$
 $\beta_3 = -0.6018 (0.0969)$
 
 Igual que antes, los pimeros tres coeficientes son idénticos, y el último nos dice que ante aumentos en el precio, la oferta monetaria real deciende un 60% por cada 1% del precio. Vemos que efectivamente este $\beta_3' = \beta_3 - 1$.
-
