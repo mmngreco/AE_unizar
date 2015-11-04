@@ -1,3 +1,37 @@
+
+
+```python
+import scipy.stats as st
+from statsmodels.formula.api import ols, rlm
+import statsmodels.stats.api as sms
+import statsmodels.api as sm
+import statsmodels.tsa.stattools as ts
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import tabulate as tb
+from statsmodels.sandbox.regression.predstd import wls_prediction_std
+```
+
+
+```python
+%matplotlib inline
+```
+
+
+```python
+%precision 3
+```
+
+
+
+
+    '%.3f'
+
+
+
 # Caso 1.1.
 ## Estimación de una función de demanda de dinero con datos de la economía española.
 
@@ -37,7 +71,7 @@ En el modelo se intenta explicar la demanda de dinero en función de la renta re
 
 - c)  Estimar el modelo asumiendo que la restricción es cierta.
 
-- d)  Suponer que queremos estimar el modelo usando la variable M1 en términos reales, imponiendo para ello la restricción del apartado b), y a la vez seguir manteniendo el IPC como variable explicativa. Pensar cómo transformar el modelo para conseguir el doble objetivo anterior y calcular de forma razonada (con la ayuda de la estimación del apartado a) el valor del coeficiente que acompaña a la variable IPC.
+- d)  Suponer que queremos estimar el modelo usando la variable M1 en términos reales, imponiendo para ello la restricción del apartado b), y a la vez seguir manteniendo el ipc como variable explicativa. Pensar cómo transformar el modelo para conseguir el doble objetivo anterior y calcular de forma razonada (con la ayuda de la estimación del apartado a) el valor del coeficiente que acompaña a la variable ipc.
 
 - e)  Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico.
 
@@ -49,9 +83,8 @@ $$log (M) = β_0 + β_1 log (y) + β_2 log (r) + β_3 log (ipc) + u$$
 
 ## QUE ES UNA TRANSFORMACIÓN DEL MODELO ORIGINAL (Cobb-Douglas):
 
-$$M= e^{\beta_0}·y^{\beta_1}·r^{\beta_2}·ipc^{\beta_3}$$
-
-$$\frac{M}{ipc^{\beta_3}}= e^{\beta_0}·y^{\beta_1}·r^{\beta_2}$$
+$$ M= e^{\beta_0}·y^{\beta_1}·r^{\beta_2}·ipc^{\beta_3}$$
+$$ \frac{M}{ipc^{\beta_3}}= e^{\beta_0}·y^{\beta_1}·r^{\beta_2}$$
 
 # DATOS:
 
@@ -66,11 +99,90 @@ Dado que cada serie presenta datos para un rango distinto, he fitrado el rango c
 - __rc:__ Tipo de interés de los depósitos a la vista (%) [enlace](http://data.imf.org/?sk=8bb6d92d-843b-4a2c-a147-4e009850014c&dsId=DS_1438873160033)
 - __y:__ PIB real, ajustado de efecto estacional, indice (2010 = 100%) [enlace](http://data.imf.org/?sk=c7fe04cd-fbbf-4f6b-b7d2-cd13a9fa5122&dsId=DS_1438873160033)
 
-![](file:///Users/mmngreco/Documents/repos/unizar/AE/caso1.1/caso_1.1/caso_1.1%20(2\)/output_10_0.png)
+
+```python
+# datos
+r = pd.read_excel('fmi_interes_spain.xlsx', skip_rows=0, header=1, index_col=0) / 100  # tanto por uno
+r.columns = ['r']
+```
+
+
+```python
+p = pd.read_excel('fmi_ipc_spain.xlsx', skip_rows=0, header=1, index_col=0)
+p.columns = ['p']
+```
+
+
+```python
+m1 = pd.read_excel('fmi_m1_spain.xlsx', skip_rows=0, header=1, index_col=0)
+m1.columns = ['m1']
+```
+
+
+```python
+y = pd.read_excel('fmi_pib_spain.xlsx',skip_rows=0, header=1, index_col=0)
+y.columns = ['y']
+```
+
+
+```python
+data = pd.concat([m1 , y, r, p], axis=1, join='inner')
+data.dropna(inplace=True)
+```
+
+
+```python
+data.plot(subplots=True, layout=(2,2), figsize=(10,9))
+plt.tight_layout()
+
+plt.suptitle('Series', y=1.015, fontsize=15)
+plt.savefig('imgs/series.png', bbox_inches='tight')
+```
+
+
+![png](output_10_0.png)
+
 
 Los gráficos nos indican que las variables presentan tendencia determinista, excepto el caso del tipo de interés que no está muy claro. Para identificar mejor los componentes deberíamos hacer un contraste de dickey-fuller para todas y decidir a partir de la información recogida. A priori podemos decir que el tipo de interés tiene una tendencia mas volátil y decreciente, mientras que el resto son más estables y con tendencia creciente respecto del tiempo.
 
-![](output_12_2.png)
+
+```python
+plt.figure(figsize=(10,7))
+ax = plt.subplot(1,2,1)
+sns.corrplot(data, ax=ax, cbar=False)
+plt.title('Series Originales', fontsize=15, y=1.09)
+
+
+ax = plt.subplot(1,2,2)
+sns.corrplot(np.log(data), ax=ax, cbar=False)
+plt.title('Series en Logartimos', fontsize=15, y=1.09)
+plt.suptitle('Correlaciones', fontsize=15, y=.91)
+```
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/seaborn/linearmodels.py:1283: UserWarning: The `corrplot` function has been deprecated in favor of `heatmap` and will be removed in a forthcoming release. Please update your code.
+      warnings.warn(("The `corrplot` function has been deprecated in favor "
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/seaborn/linearmodels.py:1349: UserWarning: The `symmatplot` function has been deprecated in favor of `heatmap` and will be removed in a forthcoming release. Please update your code.
+      warnings.warn(("The `symmatplot` function has been deprecated in favor "
+
+
+
+
+
+    <matplotlib.text.Text at 0x117fc87b8>
+
+
+
+
+![png](output_12_2.png)
+
+
+
+```python
+g = sns.pairplot(data=data, kind='reg', diag_kind='kde', size=2)
+plt.suptitle('Dispersión y Densidad Series Originales', y=1.015, fontsize=15)
+```
+
+
 
 
     <matplotlib.text.Text at 0x1172b5978>
@@ -82,11 +194,14 @@ Los gráficos nos indican que las variables presentan tendencia determinista, ex
 
 
 
-![](output_13_2.png)
+![png](output_13_2.png)
 
 
 
-
+```python
+g = sns.pairplot(data=np.log(data), kind='reg', diag_kind='kde', size=2)
+plt.suptitle('Dispersión y Densidad Series en Logaritmos', y=1.015, fontsize=15)
+```
 
 
 
@@ -100,13 +215,15 @@ Los gráficos nos indican que las variables presentan tendencia determinista, ex
 
 
 
-![](output_14_2.png)
+![png](output_14_2.png)
 
 
 Este gráfico nos muestra las relaciones entre todas las variables y los histogramas de frecuencia en la diagonal. Resalta sobre todo, el comportamiento de la variable tipo de interés con el resto, vemos que se comporta de la misma forma sea cual sea la variable, esto sugiere que el tipo de interés tiene la misma correlación con el resto de variables. Por lo tanto seguramente tendremos problemas de multicolinealidad, esto ocurre cuando dos variables explicativas tienen una fuerte correlación.
 
 
-
+```python
+print(data.head())
+```
 
                         m1          y         r          p
     Q1 1982  4363000000000  44.744559  0.119700  26.637351
@@ -117,7 +234,9 @@ Este gráfico nos muestra las relaciones entre todas las variables y los histogr
 
 
 
-
+```python
+print(data.tail())
+```
 
                          m1          y         r          p
     Q4 1997  21834900000000  71.054916  0.036000  71.072951
@@ -130,11 +249,18 @@ Este gráfico nos muestra las relaciones entre todas las variables y los histogr
 ## MODELO A
 
 
-
+```python
+# regresión
+formula = 'np.log(m1) ~ np.log(y) + np.log(r) + np.log(p)'
+results = ols(formula, data).fit().get_robustcov_results()
+print('$'+ formula+'$')
+print('\n')
+print(results.summary())
+```
 
     $np.log(m1) ~ np.log(y) + np.log(r) + np.log(p)$
-
-
+    
+    
                                 OLS Regression Results                            
     ==============================================================================
     Dep. Variable:             np.log(m1)   R-squared:                       0.991
@@ -159,18 +285,18 @@ Este gráfico nos muestra las relaciones entre todas las variables y los histogr
     Skew:                           0.021   Prob(JB):                        0.410
     Kurtosis:                       2.207   Cond. No.                         536.
     ==============================================================================
-
+    
     Warnings:
     [1] Standard Errors are heteroscedasticity robust (HC1)
 
 
 Estimando el mismo modelo pero con estimaciones robustas, no sulucionamos los problemas de heterocedasticidad pero al menos nos aseguramos que los t-ratios y el estadístico F siguen sus correspondientes distribuciones. Por tanto, usaremos estos errores estandar para hacer los contrastes.
 
-A partir de la información obtenida del modelo, analizamos el **Durbin-Watson** que contrasta la no autocorrelación, está entre 0 y 4, con un DW cerca de 0 correlación positiva y cerca de 4 correlación negativa.
+A partir de la información obtenida del modelo, analizamos el **Durbin-Watson** que contrasta la no autocorrelación, está entre 0 y 4, con un DW cerca de 0 correlación positiva y cerca de 4 correlación negativa. 
 
 $H_0 = \rho = 0$
 
-A priori, parece haber autorcorrelación, pero **no está claro** con un DW de 1.128 > 1, $\hat{\rho} = 1 - \frac{1.128}{2} = 0.436$ con $-1< \rho < 1$ estaríamos indecisos solo con este contraste, por lo que necesitamos __más información__ al respecto.
+A priori, parece haber autorcorrelación, pero **no está claro** con un DW de 1.128 > 1, $\hat{\rho} = 1 - \frac{1.128}{2} = 0.436$ con $-1< \rho < 1$ estaríamos indecisos solo con este contraste, por lo que necesitamos __más información__ al respecto. 
 
 La prueba de **Jarque-Bera** nos da información sobre la normalidad de las perturbaciones, con un JB = 1.785 y p-value = 0.410, **no hay evidencia que sugiera rechazar** la hipótesis de normalidad de las perturbaciones. El contraste **Omnibus** también da evidencia a **favor de la normalidad.**
 
@@ -181,10 +307,27 @@ Tras este breve análisis, se puede concluir que el modelo es significativo conj
 El estadístico Cond. No. es medida de multicolinealidad mayor que 60 indica problemas, como ya se vió anteriormente, cuando se analiza las relaciones entre las variables.
 
 
+```python
+data_log = np.log(data)
+fig=plt.figure(figsize=(8,7))
+
+ax1 = plt.subplot(2,1,1)
+data_log.m1.plot(label='Real', ax=ax1)
+results.fittedvalues.plot(label='Predicción')
+
+ax2 = plt.subplot(2,1,2)
+results.resid.plot(ax=ax2, label='Residuo', sharex=ax1)
+ax2.axhline(y=0, color='black', linewidth=1)
+
+ax1.legend()
+ax2.legend()
+plt.suptitle('Ajuste', fontsize=15, y=1.01)
+plt.tight_layout()
+plt.savefig('imgs/ols_ajuste.png', bbox_inches='tight')
+```
 
 
-
-![](output_22_0.png)
+![png](output_22_0.png)
 
 
 En el primero de los gráficos está representado la endógena real y la estimada, se ve como la estimación se ajusta muy bien a la realidad (endógena), aunque sabemos que presenta problemas.
@@ -194,64 +337,127 @@ El segundo es el gráfico de los residuos, a partir de 1989 parece presentar un 
 ## AUTOCORRELACIÓN
 
 
+```python
+# desde aqui
+fsize = (7,3)
 
-
-    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-      if self._edgecolors == str('face'):
-
-
-
-![](output_25_1.png)
-
-
-
-
-
-    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-      if self._edgecolors == str('face'):
-
-
-
-![](output_26_1.png)
-
-
-
-
+plt.figure(figsize=fsize)
+ax1 = plt.subplot(2,1,1)
+plot_acf(data.m1, ax=ax1)
+ax2 = plt.subplot(2,1,2)
+plot_pacf(data.m1, ax=ax2)
+plt.suptitle('Oferta Monetaria (M1)', fontsize=15, y=1.015)
+plt.tight_layout()
+plt.savefig('imgs/m1_acor.png', bbox_inches='tight')
+```
 
     /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
       if self._edgecolors == str('face'):
 
 
 
-![](output_27_1.png)
+![png](output_25_1.png)
 
 
 
-
-
-    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-      if self._edgecolors == str('face'):
-
-
-
-![](output_28_1.png)
-
-
-
-
+```python
+plt.figure(figsize=fsize)
+ax1 = plt.subplot(2,1,1)
+plot_acf(data.p, ax=ax1)
+ax2 = plt.subplot(2,1,2)
+plot_pacf(data.p, ax=ax2)
+plt.suptitle('Precio', fontsize=15, y=1.015)
+plt.tight_layout()
+plt.savefig('imgs/p_acor.png', bbox_inches='tight')
+```
 
     /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
       if self._edgecolors == str('face'):
 
 
 
-![](output_29_1.png)
+![png](output_26_1.png)
+
+
+
+```python
+plt.figure(figsize=fsize)
+ax1 = plt.subplot(2,1,1)
+
+plot_acf(data.r, ax=ax1)
+ax2 = plt.subplot(2,1,2)
+
+plot_pacf(data.r, ax=ax2)
+plt.suptitle('Tipo de Interés (r)', fontsize=15, y=1.015)
+plt.tight_layout()
+plt.savefig('imgs/r_acor.png', bbox_inches='tight')
+```
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![png](output_27_1.png)
+
+
+
+```python
+plt.figure(figsize=fsize)
+ax1 = plt.subplot(2,1,1)
+plot_acf(data.y, ax=ax1)
+ax2 = plt.subplot(2,1,2)
+plot_pacf(data.y, ax=ax2)
+plt.suptitle('PIB (y)', fontsize=15, y=1.015)
+plt.tight_layout()
+plt.savefig('imgs/y_acor.png', bbox_inches='tight')
+```
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![png](output_28_1.png)
+
+
+
+```python
+plt.figure(figsize=fsize)
+
+ax1 = plt.subplot(2,1,1)
+plot_acf(reg.resid, ax=ax1)
+
+ax2 = plt.subplot(2,1,2)
+plot_pacf(reg.resid, ax=ax2)
+
+plt.suptitle('RESIDUOS (u)', fontsize=15, y=1.015)
+plt.tight_layout()
+
+plt.savefig('imgs/u_acor.png', bbox_inches='tight')
+```
+
+    /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      if self._edgecolors == str('face'):
+
+
+
+![png](output_29_1.png)
 
 
 Los gráficos muestran para cada variable la función de autocorrelación y la función de autocorrelación parcial, puede verse como todas las variables siguen una estructura autorregresiva de orden 2, AR(2). Par el caso de los residuos la función de autocorrelación no nos dice nada casi nada. Habría que diferenciar y ver el posible orden de integración y aplicar constraste de Dickey-Fuller.
 
 
+```python
+# contraste de autocorrelación de Breusch-Godfrey
 
+print('## Contraste de Aucorrelación de Breusch-Godfrey:')
+name = ['LM', 'P-value', 'F-test', 'P-value']
+for i in range(1,5):
+    test = sms.acorr_breush_godfrey(results, nlags=i)
+    test = np.round(test, 4)
+    print('BG(%s): %s\t p-value: %s' % (i, test[0], test[1]))
+```
 
     ## Contraste de Aucorrelación de Breusch-Godfrey:
     BG(1): 11.9649	 p-value: 0.0005
@@ -263,7 +469,15 @@ Los gráficos muestran para cada variable la función de autocorrelación y la f
 Contraste LM de Breusch-Godfrey, para LM(i) con i = 1,...,4, nos dice que hay evidencia a favor de la autocorrelación de los residuos para cada orden i.
 
 
+```python
+# contraste de autocorrelación de ljun-box:
+print('## Contrsaste de Aucorrelación de LJung-Box')
+name = 'lbvalue pvalue'.split(' ')
+test = sms.acorr_ljungbox(results.resid, lags=13)
+test = np.round(test, 4)
+print(pd.DataFrame([test[0], test[1]], index=name).T)
 
+```
 
     ## Contrsaste de Aucorrelación de LJung-Box
         lbvalue  pvalue
@@ -289,7 +503,14 @@ Por tanto el modelo presenta problemas de autocorrelación, este problema es tí
 ## HETEROCEDASTICIDAD
 
 
-
+```python
+# constraste heterocedasticidad breush-pagan
+print('## Contraste de Heterocedasticidad (Breusch-Pagan):')
+name = ['Lagrange multiplier statistic', 'p-value',
+        'f-value', 'f p-value']
+bp, pvalue = np.round(sms.het_breushpagan(results.resid, results.model.exog)[:2], 3)
+print('BP: %s \t p-value: %s' % (bp, pvalue))
+```
 
     ## Contraste de Heterocedasticidad (Breusch-Pagan):
     BP: 8.049 	 p-value: 0.045
@@ -302,7 +523,15 @@ El contraste de breush-pagan plantea la siguiente regresión auxiliar:
 $\hat{u}^2 = \gamma_0 + \gamma_1 x + v$ y contrasta $\gamma_0 = \gamma_1 = 0$.
 
 
+```python
+# constraste heterocedasticidad Golfeld-Quandt
 
+print('## Contraste de Heterocedasticidad (Goldfeld-Quandt):')
+name = ['F statistic', 'p-value']
+test, pv = np.round(sms.het_goldfeldquandt(results.resid, results.model.exog)[:2], 3)
+print('GQ ~ F : %s\tpvalue: %s' % (test, pv))
+
+```
 
     ## Contraste de Heterocedasticidad (Goldfeld-Quandt):
     GQ ~ F : 0.747	pvalue: 0.785
@@ -311,7 +540,11 @@ $\hat{u}^2 = \gamma_0 + \gamma_1 x + v$ y contrasta $\gamma_0 = \gamma_1 = 0$.
 Para buscar más información que nos permita arrojar luz sobre la homocedasticidad del modelo, nos fijamos en los resultados del contraste de Goldfeld-Quandt que nos dice que se acepta la hipótesis nula de homocedasticidad. Este test suele usarse cuando pensamos que la varianza de la perturbación tiene una relación proporcional al valor de una de la varianza de una de las variables explicativas.
 
 
-
+```python
+# constraste homocedasticidad
+test, pv = np.round(sms.het_arch(results.resid)[:2], 4)
+print('Contraste LM ARCH: %s\tpvalue: %s' %(test, pv))
+```
 
     Contraste LM ARCH: 22.7763	pvalue: 0.019
 
@@ -319,7 +552,10 @@ Para buscar más información que nos permita arrojar luz sobre la homocedastici
 Si la la varianza del error depende de la varianza del error en periodos anteriores, entonces este contraste lo recogería. La hipótesis nula es la ausencia de componentes ARCH frente a la alternativa de presencia.
 
 
-
+```python
+test, pv = np.round(sms.het_white(results.resid, results.model.exog)[:2], 4)
+print('White: %s\tpvalue:%s' % (test, pv))
+```
 
     White: 14.7567	pvalue:0.0978
 
@@ -339,10 +575,25 @@ En una muestra de T residuos bajo la hipótesis nula de ausencia de componentes 
 ## ESPECIFICACIÓN
 
 
+```python
+# contraste de especificacion RESET
+print('## Contraste de RESET')
 
+reset = 'm1 ~ y + r + p + y_hat2 + y_hat3'
+
+d = np.log(data).copy()
+
+d['y_hat2'] = results.predict() ** 2
+d['y_hat3'] = results.predict() ** 3
+res = ols(reset, d).fit()
+h0 = 'y_hat2 = y_hat3 = 0'
+test = res.f_test(h0)
+pv = np.round(test.pvalue, 4)
+print('\nF-test: %s\tpvalue: %s' % (np.round(test.fvalue[0][0], 4), pv))
+```
 
     ## Contraste de RESET
-
+    
     F-test: 15.1726	pvalue: 0.0
 
 
@@ -351,7 +602,13 @@ El test de RESET contrasta la correcta especificación o no del modelo, introduc
 ## SIGNIFICATIVIDAD Y CONTRASTES
 
 
-
+```python
+# contraste b3=1
+print('## Contraste de $\\beta_3 = 1$')
+h0 = 'np.log(p) = 1'
+t_test = results.t_test(h0)
+print(t_test)
+```
 
     ## Contraste de $\beta_3 = 1$
                                  Test for Constraints                             
@@ -374,7 +631,7 @@ Por tanto el modelo evidencia __autocorrelación__.
 
 ### HOMOCEDASTICIDAD
 
-Aplicamos los contrastes de Breusch-Pagan (BP) y Goldfeld-Quandt (GQ) y encontramos cierta contradicción entre los contrastes, pues el contraste BP nos da una evidencia muy debil en contra de la hipótesis nula, para un nivel de significación del 5% se obtiene un p-value = 4,5% lo que estrictamente lleva a rechazar $H_0$.
+Aplicamos los contrastes de Breusch-Pagan (BP) y Goldfeld-Quandt (GQ) y encontramos cierta contradicción entre los contrastes, pues el contraste BP nos da una evidencia muy debil en contra de la hipótesis nula, para un nivel de significación del 5% se obtiene un p-value = 4,5% lo que estrictamente lleva a rechazar $H_0$. 
 
 Por otro lado el contraste Goldfeld-Quandt nos proporciona evidencia clara a favor la hipótesis nula.
 
@@ -414,7 +671,10 @@ Planteamos un modelo MCO para la regresión anterior y obtenemos los siguientes 
 ### PRINCIPALES RESULTADOS
 
 
-
+```python
+sns.coefplot(formula, data, intercept=True, ci=95)
+plt.suptitle('Coeficientes, confianza 95%', fontsize=15, y=1.05)
+```
 
 
 
@@ -424,11 +684,15 @@ Planteamos un modelo MCO para la regresión anterior y obtenemos los siguientes 
 
 
 
-![](output_54_1.png)
+![png](output_54_1.png)
 
 
 
-
+```python
+for i, (b, se) in enumerate(zip(results.params, results.bse)):
+    b, se = np.round([b,se], 4)
+    print('$\\beta_%s = %s (%s)$' % (i,b,se))
+```
 
     $\beta_0 = 16.7194 (0.4169)$
     $\beta_1 = 2.963 (0.191)$
@@ -491,11 +755,13 @@ $\frac{d(M)}{M} = \frac{d(P)}{P}$
 Por lo tanto aumentan en la misma dirección. Importante notar que en un esquema de modelo Keynesiano o Clásico, P es una variable endógena mientras que M es exógenas, para esta última, es importante notar que las autoridades monetarias deciden M y no r como es en la realidad.
 
 # APARTADO B
-Contrastar la restricción $β_3=1$, comentando sus implicaciones económicas.
+Contrastar la restricción $β_3=1$, comentando sus implicaciones económicas. 
 Hacer los cálculos paso a paso sin usar las opciones directas de Gretl.
 
 
-
+```python
+results.bse[-1]
+```
 
 
 
@@ -505,7 +771,9 @@ Hacer los cálculos paso a paso sin usar las opciones directas de Gretl.
 
 
 
-
+```python
+results.params[-1]
+```
 
 
 
@@ -515,7 +783,9 @@ Hacer los cálculos paso a paso sin usar las opciones directas de Gretl.
 
 
 
-
+```python
+(results.params[-1] - 1) / results.bse[-1]
+```
 
 
 
@@ -557,33 +827,89 @@ $t_{(63 , 0.025)} = -1.9983$
 $-6.208 < -1.9983 \rightarrow$ Nos indica que hay evidencia en contra de la hipótesis nula, por tanto rechazamos $H_0: \beta_3 = 1$
 
 
+```python
+data_log = np.log(data)
 
+df = len(data_log)-4-1
+beta_hat = results.params[-1]
+beta_h0 = 1
+se = results.bse[-1]
+tratio = (beta_hat - beta_h0) / se
+alpha = 0.05
+tscore = st.t.ppf(alpha / 2, df=df)
+
+txt = ''' ## Contraste con los datos
+Grados de Libertad = %s
+
+$\\hat{\\beta}$ = %s
+
+$\\beta_{H_0}$ = %s
+
+Error Estandar = %s
+
+t-ratio = %s
+
+$\\alpha = %s$
+
+punto crítico = %s''' % (df, beta_hat, beta_h0, se, tratio, alpha, tscore)
+
+print(txt)
+```
 
      ## Contraste con los datos
     Grados de Libertad = 63
-
+    
     $\hat{\beta}$ = 0.39817409979
-
+    
     $\beta_{H_0}$ = 1
-
+    
     Error Estandar = 0.0969435772227
-
+    
     t-ratio = -6.2080017826
-
+    
     $\alpha = 0.05$
-
+    
     punto crítico = -1.99834054177
 
 
 
+```python
+plt.figure(figsize=(5,4))
+# pintar la distribución t-student teórica
+x = np.linspace(-6,6,100)
+y = st.t.pdf(x, df=df)
+plt.plot(x, y)
 
+# sombrear la región crítica
+plt.fill_between(x=x[x<= -1.998], y1 = y[:len(x[x<= -1.998])], color = 'red', alpha=0.6)
+plt.fill_between(x=x[x>= 1.998], y1 = y[-len(x[x>= 1.998]):], color='red', alpha=0.6)
+
+# dibujar el punto del t-ratio
+plt.scatter(tratio, 0)
+
+# anotar el punto t-ratio
+plt.annotate(xy = (tratio,0), 
+             xytext = (-6, 0.2), 
+             s=r't-ratio($\hat{\beta_3}$)',
+             fontsize=15,
+             xycoords='data', 
+             arrowprops=dict(arrowstyle="simple, tail_width=0.2", 
+                             connectionstyle="arc3,rad=.2", 
+                             color='red', 
+                             alpha=0.6))
+# título
+plt.suptitle('Región Crítica', fontsize=17, y=1.01)
+
+plt.tight_layout()
+plt.savefig('imgs/rc.png', bbox_inches='tight')
+```
 
     /Users/mmngreco/Virtualenvs/ipynb/lib/python3.5/site-packages/matplotlib/collections.py:590: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
       if self._edgecolors == str('face'):
 
 
 
-![](output_67_1.png)
+![png](output_67_1.png)
 
 
 El gráfico muestra la representación gráfica de la prueba t-ratio para el caso de $\beta_3 = 1$
@@ -612,7 +938,10 @@ $P\{t < t_{contraste}\} < \alpha$
 Notar que dado que se trata de un contraste bilateral, basta compara el valor que queremos contrastar con el intervalo de confianza de $\hat{\beta}_3$, si el intervalo contiene a dicho valor entonces no se rechaza $H_0$, de lo contrario rechazaríamos la hipótesis nula.
 
 
-
+```python
+txt2 = '''$P-value = P\{ t < |t-ratio|\} = %s$''' % round(st.t.cdf(tratio, df=df) * 2, 9)
+print(txt2)
+```
 
     $P-value = P\{ t < |t-ratio|\} = 4.7e-08$
 
@@ -625,7 +954,7 @@ Un $\beta_3 = 1$ implica que la oferta monetaria tiene una relación proporciona
 
 Estimar asumiendo que $\beta_3 = 1$, para ello tenemos que hacer unos cambios en el modelo inicial.
 
-Modelo Inicial:
+Modelo Inicial: 
 
 $$log (M1) = β_0 + β_1 log (y) + β_2 log (r) + β_3 log (ipc) + u$$
 
@@ -638,7 +967,15 @@ $$log (M1) - log (ipc) = β_0 + β_1 log (y) + β_2 log (r) + u$$
 Esta última es la ecuación que vamos a estimar.
 
 
+```python
+formula_c = 'np.log(m1) - np.log(p) ~ np.log(y) + np.log(r)'
+modelo = ols(formula_c, data)
 
+reg = modelo.fit().get_robustcov_results()
+#endog.name = 'logM1-logP'
+
+print(reg.summary())
+```
 
                                 OLS Regression Results                            
     ==============================================================================
@@ -663,13 +1000,16 @@ Esta última es la ecuación que vamos a estimar.
     Skew:                           0.407   Prob(JB):                        0.189
     Kurtosis:                       2.282   Cond. No.                         177.
     ==============================================================================
-
+    
     Warnings:
     [1] Standard Errors are heteroscedasticity robust (HC1)
 
 
 
-
+```python
+sns.coefplot(formula_c, data, intercept=True)
+plt.suptitle('Coeficientes, confianza 95%', fontsize=15, y=1.05)
+```
 
 
 
@@ -679,7 +1019,7 @@ Esta última es la ecuación que vamos a estimar.
 
 
 
-![](output_75_1.png)
+![png](output_75_1.png)
 
 
 - Según el DW parece haber presencia de autocorrelacón.
@@ -692,7 +1032,9 @@ Esta última es la ecuación que vamos a estimar.
 - $\beta_2 = 0.0983$ % que aumenta m/p por aumentos en un 1% de r(%).
 
 
-
+```python
+reg.t_test([0,1,0])
+```
 
 
 
@@ -708,13 +1050,19 @@ Esta última es la ecuación que vamos a estimar.
 
 
 
+```python
+t = reg.f_test([0,1,1])
 
+print('F: %s\tpvalue: %s' % (np.round(t.fvalue[0][0], 4), np.round(t.pvalue, 4)))
+```
 
     F: 1941.7861	pvalue: 0.0
 
 
 
-
+```python
+print(sms.anova_lm(reg))
+```
 
                df     sum_sq    mean_sq            F        PR(>F)
     np.log(y)   1  18.379454  18.379454  5784.561958  3.050297e-65
@@ -723,7 +1071,12 @@ Esta última es la ecuación que vamos a estimar.
 
 
 
-
+```python
+# autocorrelación
+for i in range(1,9):
+    t = np.round(sm.stats.diagnostic.acorr_breush_godfrey(reg, nlags=i)[:2], 4)
+    print('BG(%s): %s\tpvalue: %s' % (i, t[0], t[1]))
+```
 
     BG(1): 15.0057	pvalue: 0.0001
     BG(2): 24.6039	pvalue: 0.0
@@ -736,7 +1089,11 @@ Esta última es la ecuación que vamos a estimar.
 
 
 
-
+```python
+for i in range(12):
+    lj = np.round(sms.acorr_ljungbox(reg.resid, lags=12), 3)
+    print('LJ(%s): %s\tpvalue: %s' % ((i+1), lj[0][i], lj[1][i]))
+```
 
     LJ(1): 14.895	pvalue: 0.0
     LJ(2): 35.63	pvalue: 0.0
@@ -753,7 +1110,17 @@ Esta última es la ecuación que vamos a estimar.
 
 
 
-
+```python
+# constraste homocedasticidad
+tname = ['ARCH', 'White', 'BP', 'GQ']
+het = [sms.het_arch(reg.resid)[:2], 
+       sms.het_white(reg.resid, reg.model.exog)[:2], 
+       sms.het_breushpagan(reg.resid, reg.model.exog)[:2], 
+       sms.het_goldfeldquandt(reg.resid, reg.model.exog)[:2]]
+het = [np.round(h, 4) for h in het]
+for i, h in enumerate(het):
+    print('%s: %s\tpvalue: %s' % (tname[i], h[0], h[1]))
+```
 
     ARCH: 17.7522	pvalue: 0.0875
     White: 8.6213	pvalue: 0.1252
@@ -790,7 +1157,11 @@ Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico
 
 
 
-
+```python
+formula_e = 'np.log(m1/p) ~ np.log(y) + np.log(r) + np.log(p)'
+reg_e = ols(formula_e, data).fit().get_robustcov_results()
+print(reg_e.summary())
+```
 
                                 OLS Regression Results                            
     ==============================================================================
@@ -816,13 +1187,16 @@ Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico
     Skew:                           0.021   Prob(JB):                        0.410
     Kurtosis:                       2.207   Cond. No.                         536.
     ==============================================================================
-
+    
     Warnings:
     [1] Standard Errors are heteroscedasticity robust (HC1)
 
 
 
-
+```python
+sns.coefplot(formula_e, data, intercept=True)
+plt.suptitle('Coeficientes, confianza 95%', fontsize=15, y=1.05)
+```
 
 
 
@@ -832,10 +1206,10 @@ Estimar al modelo del apartado d) comprobando si se cumple el resultado teórico
 
 
 
-![](output_86_1.png)
+![png](output_86_1.png)
 
 
-## AUTOCORRELACIÓN
+## AUTOCORRELACIÓN 
 
 ### Durbin-Watson
 
@@ -844,7 +1218,11 @@ No nos da información clara ya que esta cerca de 1, por tanto no podemos sacar 
 ### Breusch-Godfrey
 
 
-
+```python
+for i in range(1,5):
+    test = sms.acorr_breush_godfrey(reg_e, nlags=i)
+    print('LM(%s): %s\tpvalue: %s' % (i, test[0], test[1]))
+```
 
     LM(1): 11.9649139334	pvalue: 0.000542117130143
     LM(2): 23.8190547934	pvalue: 6.72601713742e-06
@@ -857,7 +1235,11 @@ Igual que antes, el contraste de BG nos aporta evidencia en contra de la hipóte
 ### Ljun-Box:
 
 
-
+```python
+test = np.round(sms.acorr_ljungbox(reg_e.resid, lags=13), 4)
+for i, t in enumerate(zip(test[0], test[1])):
+    print('LB(%s): %s\t%s' % (i+1, t[0], t[1]))
+```
 
     LB(1): 11.2697	0.0008
     LB(2): 30.3604	0.0
@@ -881,7 +1263,11 @@ El contraste LJB también coincide con el BG, es decir, hay evidencia de presenc
 ### Breush-Pagan
 
 
-
+```python
+name = ['Lagrange multiplier statistic', 'p-value', 'f-value', 'f p-value']
+test = sms.het_breushpagan(reg_e.resid, reg_e.model.exog)
+print(tb.tabulate(list(zip(name, test))))
+```
 
     -----------------------------  ---------
     Lagrange multiplier statistic  8.04884
@@ -896,7 +1282,11 @@ El contaste de BP no nos da una clara evidencia en contra de la hipótesis nula 
 ### Golfeld-Quandt
 
 
-
+```python
+name = ['F statistic', 'p-value']
+test = sms.het_goldfeldquandt(reg_e.resid, reg_e.model.exog)
+print(tb.tabulate(list(zip(name, test))))
+```
 
     -----------  --------
     F statistic  0.747412
@@ -909,7 +1299,9 @@ El contraste de GQ nos dice que no hay evidencia en contra de la hipótesis nula
 ### ARCH
 
 
-
+```python
+print('Contraste LM ARCH', sms.het_arch(reg_e.resid)[:2])
+```
 
     Contraste LM ARCH (22.776322189330134, 0.019003517556924414)
 
@@ -927,7 +1319,19 @@ El contraste de JB nos da un P-Value de 0.410 por lo tanto no rechazamos la hip�
 ### RESET
 
 
+```python
+d = np.log(data).copy()
+# los datos ya estan en logaritmos
+reset = 'm1 - p ~ y + r + p + y_hat2 + y_hat3'
 
+d['y_hat2'] = reg_e.predict() ** 2
+d['y_hat3'] = reg_e.predict() ** 3
+reg_reset = ols(reset, d).fit()
+h0 = 'y_hat2 = y_hat3 = 0'
+test = reg_reset.f_test(h0)
+
+print('F', test.fvalue[0][0], 'pvalue:', test.pvalue)
+```
 
     F 5.11121070558 pvalue: 0.00881675920409109
 
@@ -948,7 +1352,11 @@ Sin embargo para hacer el ejercicio de interpretación, si cumpliese las hipóte
 Los coeficientes estimados son todos significativos individualmente, esto nos lo dice los t-ratios con p-value ≈ 0. Conjuntamente también son significativos si nos fijamos en la F, con un p-value ≈ 0.
 
 
-
+```python
+for i, (b, se) in enumerate(zip(reg_e.params, reg_e.bse)):
+    b, se = np.round([b,se], 4)
+    print('$\\beta_%s = %s (%s)$' % (i,b,se))
+```
 
     $\beta_0 = 16.7194 (0.4169)$
     $\beta_1 = 2.963 (0.191)$
