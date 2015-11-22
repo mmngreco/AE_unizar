@@ -1,0 +1,27 @@
+# Comienza el historial 2015-11-22 18:47
+# Registro de las instrucciones de la sesión.  Por favor, tenga en
+# cuenta que probablemente necesitará editar este guion antes
+# de ejecutarlo.
+open /Users/mmngreco/Documents/repos/unizar/AE/datos_caso2.1A.csv
+# modelo 1
+ols consumo 0 renta --robust
+# modelo 2
+ols consumo 0 renta
+modtest --breusch-pagan
+modtest --breusch-pagan --robust
+modtest --breusch-pagan --robust
+series usq2 = $uhat*$uhat
+renta2 = renta^2
+logs renta
+# modelo 3
+ols usq2 0 renta2
+logs usq2
+# modelo 4
+ols l_usq2 0 l_renta
+# modelo 3
+series uhat2 = $yhat
+uhat = uhat2 ^ 0.5
+delete uhat
+rmplot l_renta
+# modelo 5
+quantreg {0.25,0.50,0.75} l_usq2 0 l_renta
