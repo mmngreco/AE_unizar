@@ -1,0 +1,108 @@
+Contraste sobre el VAR original:
+
+  Hipótesis nula: los parámetros de regresión son cero para las variables
+    d08
+  Contraste LR (razón de verosimilitudes): Chi-cuadrado(3) = 41,2448, con valor p = 5,80231e-09
+
+Sistema VAR, orden del retardo 3
+estimaciones de MCO, observaciones 1997:4-2014:3 (T = 68)
+Log-verosimilitud = 753,17963
+Determinante de la matriz de covarianzas = 4,807696e-14
+AIC = -21,2700
+BIC = -20,2908
+HQC = -20,8820
+Contraste Portmanteau: LB(17) = 203,195, gl = 126 [0,0000]
+
+Ecuación 1: germany
+
+              Coeficiente   Desv. Típica   Estadístico t   Valor p 
+  -----------------------------------------------------------------
+  const        0,00327783    0,00235137       1,394        0,1686  
+  germany_1    0,840602      0,134378         6,256        5,15e-08 ***
+  germany_2   −0,0486518     0,176294        −0,2760       0,7836  
+  germany_3   −0,00771409    0,137423        −0,05613      0,9554  
+  spain_1      0,596470      0,195455         3,052        0,0034   ***
+  spain_2     −0,635130      0,264789        −2,399        0,0197   **
+  spain_3      0,243166      0,184474         1,318        0,1926  
+  uk_1         0,672601      0,221678         3,034        0,0036   ***
+  uk_2        −0,748377      0,382582        −1,956        0,0553   *
+  uk_3         0,0636203     0,250850         0,2536       0,8007  
+
+Media de la vble. dep.  0,012848   D.T. de la vble. dep.   0,024031
+Suma de cuad. residuos  0,004734   D.T. de la regresión    0,009035
+R-cuadrado              0,877638   R-cuadrado corregido    0,858651
+F(9, 58)                46,22275   Valor p (de F)          3,28e-23
+rho                    −0,023140   Durbin-Watson           2,019450
+
+Contrastes F de restricciones cero:
+
+Todos los retardos de germany      F(3, 58) =   32,832 [0,0000]
+Todos los retardos de spain        F(3, 58) =   3,2071 [0,0296]
+Todos los retardos de uk           F(3, 58) =   4,1124 [0,0103]
+Todas las variables, retardo 3     F(3, 58) =  0,71711 [0,5458]
+
+Ecuación 2: spain
+
+             Coeficiente   Desv. Típica  Estadístico t  Valor p 
+  --------------------------------------------------------------
+  const       0,00121224    0,00153768      0,7884      0,4337  
+  germany_1  −0,0196898     0,0878763      −0,2241      0,8235  
+  germany_2  −0,0332798     0,115287       −0,2887      0,7739  
+  germany_3  −0,148135      0,0898674      −1,648       0,1047  
+  spain_1     0,871071      0,127817        6,815       5,99e-09 ***
+  spain_2    −0,120276      0,173159       −0,6946      0,4901  
+  spain_3    −0,000566028   0,120637       −0,004692    0,9963  
+  uk_1        0,377382      0,144966        2,603       0,0117   **
+  uk_2       −0,0152370     0,250189       −0,06090     0,9516  
+  uk_3       −0,299781      0,164043       −1,827       0,0728   *
+
+Media de la vble. dep. −0,001423   D.T. de la vble. dep.   0,020576
+Suma de cuad. residuos  0,002025   D.T. de la regresión    0,005908
+R-cuadrado              0,928627   R-cuadrado corregido    0,917552
+F(9, 58)                83,84777   Valor p (de F)          6,45e-30
+rho                     0,099362   Durbin-Watson           1,707778
+
+Contrastes F de restricciones cero:
+
+Todos los retardos de germany      F(3, 58) =   4,0820 [0,0107]
+Todos los retardos de spain        F(3, 58) =   44,642 [0,0000]
+Todos los retardos de uk           F(3, 58) =   6,6470 [0,0006]
+Todas las variables, retardo 3     F(3, 58) =   3,5139 [0,0206]
+
+Ecuación 3: uk
+
+              Coeficiente   Desv. Típica   Estadístico t   Valor p 
+  -----------------------------------------------------------------
+  const        0,00414163    0,00152504       2,716        0,0087   ***
+  germany_1   −0,109889      0,0871540       −1,261        0,2124  
+  germany_2   −0,0161926     0,114340        −0,1416       0,8879  
+  germany_3    0,0413171     0,0891287        0,4636       0,6447  
+  spain_1      0,138002      0,126767         1,089        0,2808  
+  spain_2     −0,154176      0,171735        −0,8978       0,3730  
+  spain_3      0,139691      0,119645         1,168        0,2478  
+  uk_1         1,61335       0,143775        11,22         3,65e-16 ***
+  uk_2        −0,756154      0,248133        −3,047        0,0035   ***
+  uk_3         0,00252780    0,162695         0,01554      0,9877  
+
+Media de la vble. dep.  0,020217   D.T. de la vble. dep.   0,020722
+Suma de cuad. residuos  0,001992   D.T. de la regresión    0,005860
+R-cuadrado              0,930777   R-cuadrado corregido    0,920035
+F(9, 58)                86,65188   Valor p (de F)          2,68e-30
+rho                    −0,030340   Durbin-Watson           1,999696
+
+Contrastes F de restricciones cero:
+
+Todos los retardos de germany      F(3, 58) =   1,2323 [0,3062]
+Todos los retardos de spain        F(3, 58) =   1,0029 [0,3981]
+Todos los retardos de uk           F(3, 58) =   105,47 [0,0000]
+Todas las variables, retardo 3     F(3, 58) =  0,68411 [0,5654]
+
+Para el sistema en conjunto:
+
+  Hipótesis nula: el retardo más largo es 2
+  Hipótesis alternativa: el retardo más largo es 3
+  Contraste de razón de verosimilitudes: Chi-cuadrado(9) = 19,2769 [0,0229]
+
+  Comparación de criterios de información:
+  Orden de retardos 3: AIC = -21,2700, BIC = -20,2908, HQC = -20,8820
+  Orden de retardos 2: AIC = -21,2512, BIC = -20,5658, HQC = -20,9796
