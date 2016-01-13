@@ -60,8 +60,8 @@ $$C = c_a + c_y(Y-T)$$
 
 donde:
 - C = Consumo total
-- $c_a$ = Consumo autónomo ($c_a \> 0$)
-- $c_y$ = Propensión marginal a consumir ($0\<c_b\<1$)
+- $c_a$ = Consumo autónomo ($c_a > 0$)
+- $c_y$ = Propensión marginal a consumir ($0 < c_b < 1$)
 - Y-T = Renta disponible
 
 La propensión marginal a consumir, es la proporción de renta que no se ahorra (se destina al consumo). Es importante notar que Keynes asume que el incremento en la renta es menor que el incremento en consumo, de ahí que la propensión marginal a consumir esté entre 0 y 1.
@@ -83,6 +83,7 @@ Las teorías mas importantes desarrolladas a partir de la función de consumo de
 _Se trata de hacer un gráfico de los __residuos__ para ver si su varianza permanece constante. Además, se puede hacer otro gráfico de dispersión de la __serie del cuadrado de los residuos__ frente a la variable __Renta al cuadrado__ para analizar si existe algún grado de dependencia._
 
 
+#### GRÁFICOS DE LAS VARIABLES
 
 ![][image-2]
 
@@ -96,7 +97,8 @@ En este gráfico se puede ver la relación entre el consumo y la renta, se ajust
 ![][image-4]
 
 
-Si aplicamos logaritmos naturales a ambas variables se puede ver que el ajuste mejora.
+En este gráfico se puede apreciar que si aplicamos logaritmos naturales a ambas variables se puede ver que el ajuste mejora. Sin embargo se usa las variables originales en la regresión.
+
 
 
 
@@ -155,7 +157,7 @@ En el caso de los residuos y renta al cuadrado, vemos que hay una relación, se 
 
 ### CONTRASTE DE WHITE
 
-Lo obtiene Gretl de forma automática haciendo una regresión auxiliar del cuadrado de los residuos sobre la variable exógena y su cuadrado, calculando para esta regresión el producto de T·R2, el cual se distribuye según una Chi-cuadrado con p grados de libertad, siendo p el número de regresores de esta regresión auxiliar.
+_Lo obtiene Gretl de forma automática haciendo una regresión auxiliar del cuadrado de los residuos sobre la variable exógena y su cuadrado, calculando para esta regresión el producto de T·R2, el cual se distribuye según una Chi-cuadrado con p grados de libertad, siendo p el número de regresores de esta regresión auxiliar._
 
 Contraste de White:
 $${c}_i = {c}_a + {c}_y·y + {u}_i$$
@@ -203,7 +205,7 @@ BP = 17.832&nbsp;&nbsp;&nbsp;&nbsp;$\chi^2(1) = 5.024$
 $\chi_{\text{value}}^2(1) = 3.84145882069$
 
 
-Como en el anterior apartado, se rechaza la homocedasticidad, para un nivel de significación del 5% la $\chi^2$ de tablas es menor que la obtenida para el BP. 
+>Como en el anterior apartado, se rechaza la homocedasticidad, para un nivel de significación del 5% la $\chi^2$ de tablas es menor que la obtenida para el BP. 
 
 ## APARTADO D
 
@@ -344,7 +346,7 @@ En este modelo, tenemos un consumo autónomo de 468.9€, es decir, que aunque l
 + __F:__ 0.843818619397
 + __pvalue:__ 0.436612947563
 
-El contraste de white ahora nos arroja evidencia en contra de la hipótesis alternativa, por tanto no podemos rechazar la existencia de homocedasticidad para un nivel de significatividad del 5%, pvalue \> 0.05.
+El contraste de white ahora nos arroja evidencia en contra de la hipótesis alternativa, por tanto no podemos rechazar la existencia de homocedasticidad para un nivel de significatividad del 5%, pvalue > 0.05.
 
 ![][image-10]
 
@@ -365,13 +367,11 @@ El gráfico muestra los valores reales de la nueva variable endógena, y su esti
 |White|13.323 (0.001)|1.734 (0.420)|
 
 
-
-Si comparamos los modelos, vamos que cambian los parámetros ligeramente. En el modelo 2 se estima con mayor precisión el consumo autónomo, mientras que en el modelo 1 el mas preciso el la propensión marginal al consumo. Sin embargo el modelo 1 presenta problemas de heterocedasticidad mientras que el modelo 2 sigue los supuestos del MLG.
-
-Sin embargo, con el cambio de modelo, se pierde gran parte del poder explicativo, pasando de un $R^2 = 0.928$ con el modelo 1 a un $R^2 = 0.567$ con el modelo 2.
-
-Como alternativa se podría estimar el modelo 1 con estimaciones robustas.
-
+> Si comparamos los modelos, vamos que cambian los parámetros ligeramente. En el modelo 2 se estima con mayor precisión el consumo autónomo, mientras que en el modelo 1 el mas preciso el la propensión marginal al consumo. Sin embargo el modelo 1 presenta problemas de heterocedasticidad mientras que el modelo 2 sigue los supuestos del MLG.
+> 
+> Sin embargo, con el cambio de modelo, se pierde gran parte del poder explicativo, pasando de un $R^2 = 0.928$ con el modelo 1 a un $R^2 = 0.567$ con el modelo 2.
+> 
+> Como alternativa se podría estimar el modelo 1 con estimaciones robustas.
 
 
 # CASO 2.2.
@@ -662,9 +662,6 @@ _Notar que cuando Gretl estima un modelo Probit, en la ventana de resultados apa
 
 #### LOGIT
 
-
-
-
 	Optimization terminated successfully.
 	         Current function value: 0.549867
 	         Iterations 5
@@ -697,6 +694,7 @@ Los tres modelos predicen la misma probabilidad para los mismos escenarios dada 
 
 
 #### RESÚMEN DE LOS MODELOS
+
 |PARAMETROS|LOGIT|PROBIT|MLP|
 |:--:|:--:|:--:|:--:|
 |$\hat{\beta}_0$|-0.897|-0.555|0.290|
@@ -706,6 +704,7 @@ Los tres modelos predicen la misma probabilidad para los mismos escenarios dada 
 
 
 ## APARTADO D
+
 _Usando un modelo Probit, responder a las 3 mismas preguntas que os formulasteis en el apartado b y calcular también la probabilidad de que fume un niño de 1 año, independientemente del resto de variables consideradas y ver cómo cambia la respuesta usando el modelo Probit._
 
 
@@ -936,7 +935,7 @@ $H_a$: $\Delta y_{it} \sim I(0)$
 |UK|-4.423 |0.000
 
 
-El contraste de raíz unitaria nos da evidencia en contra de la hipótesis nula para Alemania y Reino Unido, en cambio no se rechaza para España, por tanto las series en primeras diferencias son I(0) excepto para España que es al menos I(2).
+El contraste de raíz unitaria nos da evidencia __en contra__ de la hipótesis nula para Alemania y Reino Unido, en cambio no se rechaza para España, por tanto las series en primeras diferencias son I(0) excepto para España que es al menos I(2).
 
 Por tanto a modo de resumen, las series originales no son estacionarias, tienen tendencia determinista y estocástica. Existe sospecha de ruptura estructural que habrá que comprobar para un correcto análisis. Dado que las series para el caso de Alemania y Reino Unido tienen el mismo orden de integración cabe la posibilidad de que estén cointegradas y esto requiere un tratamiento distinto del propuesto en este ejercicio, por tanto dado que el caso de España no se puede dar cointegración continuamos sin hacer el análisis apropiado.
 
@@ -953,6 +952,7 @@ El correlograma de las segundas diferencias no muestra nada claro, pare que pued
 
 #### CONTRASTE DICKEY FULLER
 #### SERIE: PIB
+
 $H_0$: $\Delta^2y_{it} \sim I(1)$
 
 $H_a$: $\Delta^2y_{it} \sim I(0)$
@@ -1566,7 +1566,6 @@ Para el caso elegido no parece haber un país que produzca mayores respuestas en
 ![][image-22]
 
 [^1]:	https://es.wikipedia.org/wiki/John_Maynard_Keynes
-
 [^2]:	https://es.wikipedia.org/wiki/Funci%C3%B3n_de_consumo
 
 [image-1]:	http://i.imgur.com/7FF9A5Bl.jpg
